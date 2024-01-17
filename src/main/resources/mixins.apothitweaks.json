@@ -1,0 +1,17 @@
+{
+  "compatibilityLevel": "JAVA_17",
+  "package": "com.Apothic0n.Apothitweaks.mixin",
+  "refmap": "mixins.apothitweaks.refmap.json",
+  "required": true,
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "EnchantmentMixin",
+    "EnchantmentTableMixin"
+  ],
+  "client": [
+  ],
+  "server": [
+  ]
+}

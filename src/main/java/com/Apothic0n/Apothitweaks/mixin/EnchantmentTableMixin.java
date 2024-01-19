@@ -2,8 +2,12 @@ package com.Apothic0n.Apothitweaks.mixin;
 
 import com.Apothic0n.Apothitweaks.core.objects.EnchantmentTableInterface;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -43,11 +47,12 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
     @Overwrite
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult block) {
         if (!level.isClientSide) {
+            MutableComponent feedback = Component.translatable("block.minecraft.enchantment_table.default");
             BlockEntity genericBlockEntity = level.getBlockEntity(pos);
             if (genericBlockEntity instanceof EnchantmentTableInterface blockEntity) {
                 int amountOfShelves = 0;
                 for (BlockState state : level.getBlockStates(new AABB(pos.north(2).east(2), pos.south(2).west(2).above())).toList()) {
-                    if (state.is(Tags.Blocks.BOOKSHELVES)) {
+                    if (state.is(BlockTags.ENCHANTMENT_POWER_PROVIDER)) {
                         amountOfShelves++;
                     }
                 }
@@ -69,7 +74,7 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                         lapis = itemInOffhand;
                     }
                     if (book != null && lapis != null) {
-                        int highestPower = boundPower;
+                        int highestPower = 1;
                         Enchantment highestEnchant = boundEnchantment;
                         Map<Enchantment, Integer> allEnchants = EnchantmentHelper.getEnchantments(book);
                         for (Map.Entry<Enchantment, Integer> enchantment : allEnchants.entrySet()) {
@@ -86,24 +91,56 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                                 }
                             }
                         }
-                        if (lapis.getCount() >= 32 && boundEnchantment.equals(Enchantments.VANISHING_CURSE) && player.experienceLevel >= highestPower) {
-                            book.setCount(book.getCount() - 1);
-                            lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * 32, 16)));
-                            player.giveExperienceLevels(-highestPower);
-                            blockEntity.apothitweaks$setBoundPower(highestPower);
-                            blockEntity.apothitweaks$setBoundEnchantment(highestEnchant);
-                            level.playSound(null, pos, SoundEvents.ENDER_CHEST_OPEN, SoundSource.BLOCKS);
-                        } else if (lapis.getCount() >= 16 && boundEnchantment.equals(highestEnchant) && boundPower == highestPower && highestPower < highestEnchant.getMaxLevel() && player.experienceLevel >= highestPower) {
-                            book.setCount(book.getCount() - 1);
-                            lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * 16, 8)));
-                            player.giveExperienceLevels(-highestPower);
-                            blockEntity.apothitweaks$setBoundPower(highestPower + 1);
-                            blockEntity.apothitweaks$setBoundEnchantment(highestEnchant);
-                            level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS);
+                        if (player.experienceLevel >= highestPower) {
+                            if (boundEnchantment.equals(Enchantments.VANISHING_CURSE)) {
+                                if (lapis.getCount() >= 32) {
+                                    book.setCount(book.getCount() - 1);
+                                    lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * 32, 16)));
+                                    player.giveExperienceLevels(-highestPower);
+                                    blockEntity.apothitweaks$setBoundPower(highestPower);
+                                    blockEntity.apothitweaks$setBoundEnchantment(highestEnchant);
+                                    level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS);
+                                    feedback = Component.translatable("block.minecraft.enchantment_table.successfully_bound");
+                                } else if (lapis.getCount() < 32) {
+                                    level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                                    feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_lapis");
+                                }
+                            } else {
+                                if (lapis.getCount() >= 16 && highestPower < highestEnchant.getMaxLevel() && boundPower <= highestPower) {
+                                    if (boundPower == highestPower) {
+                                        book.setCount(book.getCount() - 1);
+                                        lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * 16, 8)));
+                                        player.giveExperienceLevels(-highestPower);
+                                        blockEntity.apothitweaks$setBoundPower(highestPower + 1);
+                                        blockEntity.apothitweaks$setBoundEnchantment(highestEnchant);
+                                        level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS);
+                                        feedback = Component.translatable("block.minecraft.enchantment_table.successfully_powered_up");
+                                    } else {
+                                        book.setCount(book.getCount() - 1);
+                                        lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * 16, 8)));
+                                        player.giveExperienceLevels(-highestPower);
+                                        blockEntity.apothitweaks$setBoundPower(highestPower);
+                                        blockEntity.apothitweaks$setBoundEnchantment(highestEnchant);
+                                        level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS);
+                                        feedback = Component.translatable("block.minecraft.enchantment_table.successfully_powered_up");
+                                    }
+                                } else if (lapis.getCount() < 16) {
+                                    level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                                    feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_lapis");
+                                } else if (highestPower >= highestEnchant.getMaxLevel()) {
+                                    level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                                    feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_maxed");
+                                } else if (boundPower > highestPower) {
+                                    level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                                    feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_weaker");
+                                }
+                            }
                         } else {
                             level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_exp");
                         }
                     } else if (itemInHand.canApplyAtEnchantingTable(boundEnchantment) && lapis != null && itemInHand.getEnchantmentLevel(boundEnchantment) < boundPower) {
+                        String name = itemInHand.getHoverName().getString();
                         Map<Enchantment, Integer> newEnchantments = itemInHand.getAllEnchantments();
                         Integer didReplace = newEnchantments.replace(boundEnchantment, boundPower);
                         int totalEnchantments = newEnchantments.size();
@@ -120,15 +157,47 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                             } else {
                                 EnchantmentHelper.setEnchantments(newEnchantments, itemInHand);
                             }
+                            if (boundEnchantment.equals(Enchantments.VANISHING_CURSE)) {
+                                feedback = Component.translatable("block.minecraft.enchantment_table.successfully_cursed", name+".");
+                            } else {
+                                feedback = Component.translatable("block.minecraft.enchantment_table.successfully_enchanted", name);
+                            }
                             level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS);
-                        } else {
+                        } else if (lapis.getCount() < cappedLapisCost) {
                             level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_lapis", name+".");
+                        } else if (player.experienceLevel < expCost) {
+                            level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_exp", name+".");
+                        } else if (itemInHand.getEnchantmentLevel(boundEnchantment) == boundPower) {
+                            level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_existing", name);
+                        } else if (itemInHand.getEnchantmentLevel(boundEnchantment) > boundPower) {
+                            level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_weaker", name);
                         }
+                    } else if (lapis == null) {
+                        level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                        feedback = Component.translatable("block.minecraft.enchantment_table.hold_lapis");
+                    } else if (itemInHand.getEnchantmentLevel(boundEnchantment) == boundPower) {
+                        level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                        feedback = Component.translatable("block.minecraft.enchantment_table.existing");
+                    } else if (itemInHand.getEnchantmentLevel(boundEnchantment) > boundPower) {
+                        level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                        feedback = Component.translatable("block.minecraft.enchantment_table.weaker");
+                    } else if (!itemInHand.canApplyAtEnchantingTable(boundEnchantment)) {
+                        level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                        feedback = Component.translatable("block.minecraft.enchantment_table.unsupported");
                     } else {
-                        level.playSound(null, pos, SoundEvents.GLASS_FALL, SoundSource.BLOCKS);
+                        level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                        feedback = Component.translatable("block.minecraft.enchantment_table.empty_handed");
                     }
+                } else {
+                    level.playSound(null, pos, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.BLOCKS);
+                    feedback = Component.translatable("block.minecraft.enchantment_table.bookshelves", 6-amountOfShelves);
                 }
             }
+            player.displayClientMessage(feedback, true);
             return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.CONSUME;

@@ -1,0 +1,21 @@
+{
+  "block.minecraft.enchantment_table.default": "An unexpected error occurred.",
+  "block.minecraft.enchantment_table.successfully_bound": "The enchantment table is now bound with the provided enchantment.",
+  "block.minecraft.enchantment_table.successfully_powered_up": "The bound enchantment grows in power.",
+  "block.minecraft.enchantment_table.failed_bound_lapis": "The provided lapis is insufficent to bind this enchantment.",
+  "block.minecraft.enchantment_table.failed_bound_maxed": "The bound enchantment has already reached its maximum power.",
+  "block.minecraft.enchantment_table.failed_bound_weaker": "The bound enchantment is already more powerful than the offer.",
+  "block.minecraft.enchantment_table.failed_bound_exp": "You lack the required experience to bind this enchantment.",
+  "block.minecraft.enchantment_table.successfully_cursed": "This table has not yet been bound, and has therefore cursed your %s",
+  "block.minecraft.enchantment_table.successfully_enchanted": "%s has been successfully enchanted.",
+  "block.minecraft.enchantment_table.failed_enchant_lapis": "The provided lapis is insufficent to enchant %s",
+  "block.minecraft.enchantment_table.failed_enchant_exp": "You lack the required experience to enchant %s",
+  "block.minecraft.enchantment_table.failed_enchant_existing": "%s already has this enchantment.",
+  "block.minecraft.enchantment_table.failed_enchant_weaker": "%s already has a stronger power of this enchantment.",
+  "block.minecraft.enchantment_table.hold_lapis": "Your offhand needs to be holding lapis.",
+  "block.minecraft.enchantment_table.existing": "Cannot apply an already applied enchantment.",
+  "block.minecraft.enchantment_table.weaker": "Cannot apply a weaker version of an already applied enchantment.",
+  "block.minecraft.enchantment_table.unsupported": "This enchantment is not supported by your item.",
+  "block.minecraft.enchantment_table.empty_handed": "You cannot enchant your hands.",
+  "block.minecraft.enchantment_table.bookshelves": "The enchanting table requires %s more bookshelves or candles."
+}

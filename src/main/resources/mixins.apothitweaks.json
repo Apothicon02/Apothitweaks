@@ -7,12 +7,14 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "AnvilBlockMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
-    "EnchantmentTableMixin"
+    "EnchantmentTableBlockMixin"
   ],
   "client": [
+    "NameTagItemMixin"
   ],
   "server": [
   ]

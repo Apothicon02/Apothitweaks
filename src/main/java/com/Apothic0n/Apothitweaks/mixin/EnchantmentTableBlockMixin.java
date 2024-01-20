@@ -4,9 +4,9 @@ import com.Apothic0n.Apothitweaks.core.objects.EnchantmentTableInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,16 +18,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EnchantmentTableBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
 import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,17 +31,17 @@ import org.spongepowered.asm.mixin.Overwrite;
 import java.util.Map;
 
 @Mixin(EnchantmentTableBlock.class)
-public class EnchantmentTableMixin extends BaseEntityBlock {
-    protected EnchantmentTableMixin(Properties properties) {
+public class EnchantmentTableBlockMixin extends BaseEntityBlock {
+    protected EnchantmentTableBlockMixin(Properties properties) {
         super(properties);
     }
 
     /**
      * @author Apothicon
-     * @reason Binds the enchantment table to an enchantment.
+     * @reason Custom enchantment table system.
      */
     @Overwrite
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult block) {
+    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide) {
             MutableComponent feedback = Component.translatable("block.minecraft.enchantment_table.default");
             BlockEntity genericBlockEntity = level.getBlockEntity(pos);
@@ -140,7 +136,7 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                             }
                         } else {
                             level.playSound(null, pos, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, SoundSource.BLOCKS);
-                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_exp", highestEnchantName);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_bound_exp", highestPower-player.experienceLevel, highestEnchantName);
                         }
                     } else if (itemInHand.canApplyAtEnchantingTable(boundEnchantment) && lapis != null && itemInHand.getEnchantmentLevel(boundEnchantment) < boundPower) {
                         Map<Enchantment, Integer> newEnchantments = itemInHand.getAllEnchantments();
@@ -154,6 +150,7 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                         if (lapis.getCount() >= cappedLapisCost && player.experienceLevel >= expCost) {
                             lapis.setCount((int) (lapis.getCount() - Math.max(Math.random() * cappedLapisCost, cappedLapisCost-8)));
                             player.giveExperienceLevels(-expCost);
+                            player.awardStat(Stats.ENCHANT_ITEM);
                             if (didReplace == null) {
                                 itemInHand.enchant(boundEnchantment, boundPower);
                             } else {
@@ -170,7 +167,7 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                             feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_lapis", itemName);
                         } else if (player.experienceLevel < expCost) {
                             level.playSound(null, pos, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, SoundSource.BLOCKS);
-                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_exp", itemName);
+                            feedback = Component.translatable("block.minecraft.enchantment_table.failed_enchant_exp", expCost-player.experienceLevel, itemName);
                         } else if (itemInHand.getEnchantmentLevel(boundEnchantment) == boundPower) {
                             level.playSound(null, pos, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, SoundSource.BLOCKS);
                             feedback = Component.translatable("block.minecraft.enchantment_table.existing", itemName);
@@ -203,9 +200,9 @@ public class EnchantmentTableMixin extends BaseEntityBlock {
                 }
             }
             player.displayClientMessage(feedback, true);
-            return InteractionResult.SUCCESS;
-        } else {
             return InteractionResult.CONSUME;
+        } else {
+            return InteractionResult.SUCCESS;
         }
     }
 

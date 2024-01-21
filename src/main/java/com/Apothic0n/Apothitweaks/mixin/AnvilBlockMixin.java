@@ -63,6 +63,7 @@ public abstract class AnvilBlockMixin {
                     String gearName = gear.getHoverName().getString();
                     if (player.experienceLevel >= 1) {
                         player.giveExperienceLevels(-1);
+                        nameTag.setCount(nameTag.getCount()-1);
                         gear.setHoverName(newName);
                         player.awardStat(Stats.INTERACT_WITH_ANVIL);
                         level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS);

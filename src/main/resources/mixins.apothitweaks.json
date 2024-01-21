@@ -11,11 +11,11 @@
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
-    "EnchantmentTableBlockMixin"
+    "EnchantmentTableBlockMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "client": [
     "NameTagItemMixin"
   ],
-  "server": [
-  ]
+  "server": []
 }

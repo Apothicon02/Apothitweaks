@@ -31,5 +31,6 @@
   "block.minecraft.anvil.successfully_repaired": "%s has successfully been repaired using one %s.",
   "block.minecraft.anvil.nothing": "Hold the item you want to repair / rename.",
 
-  "gui.apothitweaks.rename": "Rename"
+  "gui.apothitweaks.rename_button": "Rename",
+  "gui.apothitweaks.rename_hint": "Enter name"
 }

@@ -13,7 +13,7 @@
               "function": "minecraft:enchant_randomly",
               "enchantments": [
                 "minecraft:projectile_protection",
-                "minecraft:sweeping_edge"
+                "minecraft:sweeping"
               ]
             }
           ]

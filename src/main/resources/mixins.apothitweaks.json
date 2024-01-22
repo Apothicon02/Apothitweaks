@@ -8,11 +8,14 @@
   },
   "mixins": [
     "AnvilBlockMixin",
+    "ArmorMaterialsMixin",
+    "CreeperMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
     "EnchantmentTableBlockMixin",
-    "ServerGamePacketListenerImplMixin"
+    "ServerGamePacketListenerImplMixin",
+    "SpiderMixin"
   ],
   "client": [
     "NameTagItemMixin"

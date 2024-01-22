@@ -91,7 +91,7 @@ public abstract class AnvilBlockMixin {
                     }
                     if (resource != null && !resource.isEmpty()) {
                         String resourceName = resource.getHoverName().getString();
-                        if (gear.getItem().isValidRepairItem(gear, resource)) {
+                        if (gear.getItem().isValidRepairItem(gear, resource) || ((gearName.contains("Netherite") || gearName.contains("netherite")) && resource.is(Items.DIAMOND))) {
                             if (player.experienceLevel >= 3) {
                                 if (gear.getDamageValue() > 0) {
                                     player.giveExperienceLevels(-3);

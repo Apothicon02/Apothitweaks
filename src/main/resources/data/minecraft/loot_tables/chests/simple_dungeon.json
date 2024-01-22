@@ -13,7 +13,7 @@
               "function": "minecraft:enchant_randomly",
               "enchantments": [
                 "minecraft:silk_touch",
-                "minecraft:sweeping_edge"
+                "minecraft:sweeping"
               ]
             }
           ]

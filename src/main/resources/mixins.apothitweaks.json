@@ -14,6 +14,8 @@
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
     "EnchantmentTableBlockMixin",
+    "FoodDataMixin",
+    "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "SpiderMixin"
   ],

@@ -21,6 +21,8 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Shadow public abstract boolean isSwimming();
 
+    @Shadow public abstract boolean isAffectedByFluids();
+
     protected PlayerMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
         super(p_20966_, p_20967_);
     }
@@ -33,14 +35,27 @@ public abstract class PlayerMixin extends LivingEntity {
     protected float getBlockSpeedFactor() {
         float speed = !this.abilities.flying && !this.isFallFlying() ? super.getBlockSpeedFactor() : 1.0F;
         BlockState blockOn = this.getBlockStateOn();
-        if (blockOn.isAir() && !this.abilities.flying && this.isSprinting()) {
-            return speed-0.2F;
-        } else if (!Set.of(Blocks.SNOW_BLOCK, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.ROOTED_DIRT, Blocks.MUD, Blocks.SAND, Blocks.RED_SAND, Blocks.SOUL_SAND, Blocks.NETHERRACK).contains(blockOn.getBlock()) &&
-                blockOn.isSolid() && blockOn.getBlock().getFriction() == 0.6F && speed == 1.0F && !this.isSwimming() && this.isSprinting()) {
-            return speed+0.5F;
-        } else if (this.isSprinting()) {
-            return speed-0.2F;
+        if (this.isSprinting()) {
+            if (blockOn.isAir() && !this.abilities.flying) {
+                return speed - 0.15F;
+            } else if (!Set.of(Blocks.SNOW_BLOCK, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.ROOTED_DIRT, Blocks.MUD, Blocks.SAND, Blocks.RED_SAND, Blocks.SOUL_SAND, Blocks.NETHERRACK).contains(blockOn.getBlock()) &&
+                    blockOn.isSolid() && blockOn.getBlock().getFriction() == 0.6F && speed == 1.0F && !this.isSwimming()) {
+                return speed + 0.5F;
+            } else if (this.isSwimming() && this.isAffectedByFluids()) {
+                return speed - 0.07F;
+            } else {
+                return speed - 0.3F;
+            }
         }
         return speed;
+    }
+
+    /**
+     * @author Apothicon
+     * @reason Makes xp levels a flat amount of xp.
+     */
+    @Overwrite
+    public int getXpNeededForNextLevel() {
+        return 50;
     }
 }

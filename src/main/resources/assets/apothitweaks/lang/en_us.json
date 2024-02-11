@@ -32,5 +32,6 @@
   "block.minecraft.anvil.nothing": "Hold the item you want to repair / rename.",
 
   "gui.apothitweaks.rename_button": "Rename",
-  "gui.apothitweaks.rename_hint": "Enter name"
+  "gui.apothitweaks.rename_hint": "Enter name",
+  "key.apothitweaks.pet": "Summon/Capture Pet"
 }

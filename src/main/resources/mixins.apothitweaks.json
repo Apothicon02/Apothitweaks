@@ -7,14 +7,19 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "AbstractMinecartMixin",
+    "AbstractSkeletonMixin",
     "AnvilBlockMixin",
-    "ArmorMaterialsMixin",
+    "BoatMixin",
     "CreeperMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
     "EnchantmentTableBlockMixin",
+    "EntityMixin",
+    "FireworkRocketItemMixin",
     "FoodDataMixin",
+    "PigMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "SpiderMixin"

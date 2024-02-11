@@ -1,8 +1,10 @@
 package com.Apothic0n.Apothitweaks.core.events;
 
 import com.Apothic0n.Apothitweaks.Apothitweaks;
+import com.Apothic0n.Apothitweaks.core.objects.PlayerPetProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,7 +20,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +33,6 @@ import static com.Apothic0n.Apothitweaks.core.ApothitweaksMath.getOffsetDouble;
 
 @Mod.EventBusSubscriber(modid = Apothitweaks.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
-
     @SubscribeEvent
     static void playerJoined(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
@@ -70,6 +73,26 @@ public class ForgeEvents {
     static void renderGuiOverlayEvent(RenderGuiOverlayEvent event) {
         if (event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type()) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void attachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player player) {
+            if (!player.getCapability(PlayerPetProvider.PLAYER_PET).isPresent()) {
+                event.addCapability(new ResourceLocation(Apothitweaks.MODID, "properties"), new PlayerPetProvider());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerCloneEvent(PlayerEvent.Clone event) {
+        if (event.isWasDeath()) {
+            event.getOriginal().getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(oldStore -> {
+                event.getOriginal().getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(newStore -> {
+                    newStore.copyFrom(oldStore);
+                });
+            });
         }
     }
 }

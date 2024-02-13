@@ -1,6 +1,7 @@
 package com.Apothic0n.Apothitweaks.core.events;
 
 import com.Apothic0n.Apothitweaks.Apothitweaks;
+import com.Apothic0n.Apothitweaks.core.objects.PlayerPet;
 import com.Apothic0n.Apothitweaks.core.objects.PlayerPetProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -85,10 +87,24 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void playerCloneEvent(PlayerEvent.Clone event) {
+        Player oldPlayer = event.getOriginal();
+        oldPlayer.revive();
+        Player newPlayer = event.getEntity();
         if (event.isWasDeath()) {
-            event.getOriginal().getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(oldStore -> {
-                event.getOriginal().getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
+            oldPlayer.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent((oldPet) -> {
+                newPlayer.getCapability(PlayerPetProvider.PLAYER_PET).map(newPet -> {
+                    newPet.setPet(oldPet.getPet());
+                    return Unit.INSTANCE;
+                }).orElseGet(() -> {
+                   if (!oldPet.getPet().isEmpty()) {
+                       Level level = oldPlayer.level();
+                       Entity entity = EntityType.create(oldPet.getPet(), level).orElseThrow();
+                       entity.moveTo(oldPlayer.position());
+                       entity.resetFallDistance();
+                       level.addFreshEntity(entity);
+                       level.playSound(null, oldPlayer.blockPosition(), SoundEvents.SNIFFER_EGG_CRACK, SoundSource.PLAYERS, 1F, 1F);
+                   }
+                    return Unit.INSTANCE;
                 });
             });
         }

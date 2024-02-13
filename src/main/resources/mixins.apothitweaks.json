@@ -19,6 +19,8 @@
     "EntityMixin",
     "FireworkRocketItemMixin",
     "FoodDataMixin",
+    "FoodOnAStickItemMixin",
+    "ItemEntityMixin",
     "PigMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",

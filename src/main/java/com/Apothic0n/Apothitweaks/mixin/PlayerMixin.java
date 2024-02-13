@@ -1,5 +1,6 @@
 package com.Apothic0n.Apothitweaks.mixin;
 
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -47,7 +48,7 @@ public abstract class PlayerMixin extends LivingEntity {
         if (this.isSprinting() && !this.isCreative()) {
             if (blockOn.isAir() && !this.abilities.flying) {
                 return speed - 0.15F;
-            } else if (!Set.of(Blocks.SNOW_BLOCK, Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.ROOTED_DIRT, Blocks.MUD, Blocks.SAND, Blocks.RED_SAND, Blocks.SOUL_SAND, Blocks.NETHERRACK).contains(blockOn.getBlock()) &&
+            } else if ((blockOn.getTags().toList().contains(BlockTags.MINEABLE_WITH_AXE) || blockOn.getTags().toList().contains(BlockTags.MINEABLE_WITH_PICKAXE)) &&
                     blockOn.isSolid() && blockOn.getBlock().getFriction() == 0.6F && speed == 1.0F && !this.isSwimming()) {
                 return speed + 0.3F;
             } else if (this.isSwimming() && this.isAffectedByFluids()) {

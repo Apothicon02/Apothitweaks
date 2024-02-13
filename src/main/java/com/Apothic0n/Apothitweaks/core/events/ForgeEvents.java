@@ -78,10 +78,8 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void attachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player player) {
-            if (!player.getCapability(PlayerPetProvider.PLAYER_PET).isPresent()) {
-                event.addCapability(new ResourceLocation(Apothitweaks.MODID, "properties"), new PlayerPetProvider());
-            }
+        if (event.getObject() instanceof Player) {
+            event.addCapability(new ResourceLocation(Apothitweaks.MODID, "properties"), new PlayerPetProvider());
         }
     }
 

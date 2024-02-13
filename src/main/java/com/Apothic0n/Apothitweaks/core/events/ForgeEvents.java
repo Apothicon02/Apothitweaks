@@ -109,4 +109,11 @@ public class ForgeEvents {
             });
         }
     }
+
+    @SubscribeEvent
+    public static void entityJoinLevelEvent(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof ItemEntity entity && entity.lifespan == 6000) {
+            entity.lifespan = 36000;
+        }
+    }
 }

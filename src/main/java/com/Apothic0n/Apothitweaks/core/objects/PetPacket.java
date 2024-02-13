@@ -35,7 +35,7 @@ public class PetPacket implements ApothitweaksPacket {
         context.get().enqueueWork(() -> {
             NetworkEvent.Context data = context.get();
             Player player = data.getSender();
-            if (player != null) {
+            if (player != null && !player.isSpectator()) {
                 player.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(playerPet -> {
                     BlockPos pos = player.blockPosition();
                     ServerLevel level = (ServerLevel) player.level();

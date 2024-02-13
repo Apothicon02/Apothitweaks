@@ -15,10 +15,6 @@ public class PlayerPet {
         this.pet = petNbt;
     }
 
-    public void copyFrom(PlayerPet source) {
-        this.pet = source.pet;
-    }
-
     public void saveNBTData(CompoundTag nbt) {
         if (pet != null) {
             nbt.put("pet", pet);

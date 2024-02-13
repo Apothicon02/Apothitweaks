@@ -20,7 +20,6 @@
     "FireworkRocketItemMixin",
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
-    "ItemEntityMixin",
     "PigMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
@@ -29,5 +28,6 @@
   "client": [
     "NameTagItemMixin"
   ],
-  "server": []
+  "server": [
+  ]
 }

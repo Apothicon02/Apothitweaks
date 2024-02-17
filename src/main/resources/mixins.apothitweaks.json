@@ -21,6 +21,7 @@
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
     "ItemEntityMixin",
+    "ItemStackMixin",
     "PigMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",

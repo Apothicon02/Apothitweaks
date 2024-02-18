@@ -74,7 +74,7 @@ public abstract class PlayerMixin extends LivingEntity {
      * @reason Makes items not scatter randomly upon death.
      */
     @ModifyVariable(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-    private boolean injected(boolean p_36180_) {
+    private boolean drop(boolean p_36180_) {
         return false;
     }
 }

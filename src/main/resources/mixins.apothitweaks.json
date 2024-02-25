@@ -11,6 +11,7 @@
     "AbstractSkeletonMixin",
     "AnvilBlockMixin",
     "BoatMixin",
+    "BottleItemMixin",
     "CreeperMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
@@ -21,14 +22,20 @@
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
     "ItemEntityMixin",
+    "ItemMixin",
     "ItemStackMixin",
+    "LivingEntityMixin",
     "PigMixin",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
-    "SpiderMixin"
+    "ServerLevelMixin",
+    "SpiderMixin",
+    "VexMixin"
   ],
   "client": [
-    "NameTagItemMixin"
+    "ClientLevelMixin",
+    "NameTagItemMixin",
+    "WaterDropParticleMixin"
   ],
   "server": [
   ]

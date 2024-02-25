@@ -21,4 +21,15 @@ public class ApothitweaksMath {
             return offset;
         }
     }
+    public static int mid(int x, int y) {
+        return x/2 + y/2 + (x%2 + y%2)/2;
+    }
+
+    public static int booleanToInt(boolean bool) {
+        if (bool == true) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

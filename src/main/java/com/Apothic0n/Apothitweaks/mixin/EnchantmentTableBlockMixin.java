@@ -89,7 +89,7 @@ public class EnchantmentTableBlockMixin extends BaseEntityBlock {
                                 }
                             }
                         }
-                        String highestEnchantName = boundEnchantment.getFullname(boundPower).getString();
+                        String highestEnchantName = highestEnchant.getFullname(highestPower).getString();
                         if (player.experienceLevel >= highestPower) {
                             if (boundEnchantment.equals(Enchantments.VANISHING_CURSE)) {
                                 if (lapis.getCount() >= 32) {

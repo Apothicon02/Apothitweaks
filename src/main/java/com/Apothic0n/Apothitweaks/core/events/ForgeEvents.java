@@ -26,6 +26,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -35,6 +36,11 @@ import static com.Apothic0n.Apothitweaks.core.ApothitweaksMath.getOffsetDouble;
 
 @Mod.EventBusSubscriber(modid = Apothitweaks.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
+    @SubscribeEvent
+    static void farmlandTrampleEvent(BlockEvent.FarmlandTrampleEvent event) {
+        event.setCanceled(true);
+    }
+
     @SubscribeEvent
     static void playerJoined(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();

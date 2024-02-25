@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.*;
 
 import java.util.function.Supplier;
 
-@Mixin(ServerLevel.class)
+@Mixin(value = ServerLevel.class, priority = 1)
 public abstract class ServerLevelMixin extends Level {
 
     @Shadow @Final private boolean tickTime;

@@ -4,11 +4,15 @@ import com.Apothic0n.Apothitweaks.Apothitweaks;
 import com.Apothic0n.Apothitweaks.core.ApothitweaksMath;
 import com.Apothic0n.Apothitweaks.core.objects.ApothitweaksPacketHandler;
 import com.Apothic0n.Apothitweaks.core.objects.PetPacket;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.shaders.FogShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -64,9 +68,10 @@ public class ClientForgeEvents {
         ClientLevel level = instance.level;
         if (level != null && level.dimension().location().toString().contains("overworld") && event.getCamera().getFluidInCamera() == FogType.NONE) {
             float y = (float) event.getCamera().getPosition().y();
-            event.setRed(event.getRed()+(((level.getBiome(event.getCamera().getBlockPosition().atY(69)).get().getBaseTemperature()-0.8F)/25)));
-            event.setGreen(event.getGreen()-(((level.getBiome(event.getCamera().getBlockPosition().atY(69)).get().getBaseTemperature()-0.8F)/20)));
-            event.setBlue(event.getBlue()-(((level.getBiome(event.getCamera().getBlockPosition().atY(69)).get().getBaseTemperature()-0.8F)/15)));
+            float temp = level.getBiome(event.getCamera().getBlockPosition().atY(69)).get().getBaseTemperature();
+            event.setRed(event.getRed()+(((temp-0.8F)/25)));
+            event.setGreen(event.getGreen()-(((temp-0.8F)/20)));
+            event.setBlue(event.getBlue()-(((temp-0.8F)/15)));
             if (y < 48) {
                 float yScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 1, 48, 16);
                 float invYScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 0.8F, 16, 48);

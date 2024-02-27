@@ -7,10 +7,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
@@ -55,25 +52,34 @@ public class NoodleRiverFeature extends Feature<NoneFeatureConfiguration> {
                     worldgenlevel.setBlock(blockpos1, Blocks.CAVE_AIR.defaultBlockState(), 2);
                 } else {
                     worldgenlevel.setBlock(blockpos1, Blocks.WATER.defaultBlockState(), 2);
-                    if (!worldgenlevel.getBlockState(blockpos1.below()).isSolid() && !worldgenlevel.getBlockState(blockpos1.below()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.below()).getBlock() instanceof SimpleWaterloggedBlock)) {
+                    if (!worldgenlevel.getBlockState(blockpos1.below()).isSolid() && !worldgenlevel.getBlockState(blockpos1.below()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.below()).getBlock() instanceof SimpleWaterloggedBlock) &&
+                            !(worldgenlevel.getBlockState(blockpos1.below()).getBlock() instanceof LiquidBlockContainer)) {
                         worldgenlevel.setBlock(blockpos1.below(), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 2);
                     }
-                    if (!worldgenlevel.getBlockState(blockpos1.north()).isSolid() && !worldgenlevel.getBlockState(blockpos1.north()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.north()).getBlock() instanceof SimpleWaterloggedBlock)) {
+                    if (!worldgenlevel.getBlockState(blockpos1.north()).isSolid() && !worldgenlevel.getBlockState(blockpos1.north()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.north()).getBlock() instanceof SimpleWaterloggedBlock) &&
+                            !(worldgenlevel.getBlockState(blockpos1.north()).getBlock() instanceof LiquidBlockContainer)) {
                         worldgenlevel.setBlock(blockpos1.north(), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 2);
                     }
-                    if (!worldgenlevel.getBlockState(blockpos1.east()).isSolid() && !worldgenlevel.getBlockState(blockpos1.east()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.east()).getBlock() instanceof SimpleWaterloggedBlock)) {
+                    if (!worldgenlevel.getBlockState(blockpos1.east()).isSolid() && !worldgenlevel.getBlockState(blockpos1.east()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.east()).getBlock() instanceof SimpleWaterloggedBlock) &&
+                            !(worldgenlevel.getBlockState(blockpos1.east()).getBlock() instanceof LiquidBlockContainer)) {
                         worldgenlevel.setBlock(blockpos1.east(), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 2);
                     }
-                    if (!worldgenlevel.getBlockState(blockpos1.south()).isSolid() && !worldgenlevel.getBlockState(blockpos1.south()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.south()).getBlock() instanceof SimpleWaterloggedBlock)) {
+                    if (!worldgenlevel.getBlockState(blockpos1.south()).isSolid() && !worldgenlevel.getBlockState(blockpos1.south()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.south()).getBlock() instanceof SimpleWaterloggedBlock) &&
+                            !(worldgenlevel.getBlockState(blockpos1.south()).getBlock() instanceof LiquidBlockContainer)) {
                         worldgenlevel.setBlock(blockpos1.south(), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 2);
                     }
-                    if (!worldgenlevel.getBlockState(blockpos1.west()).isSolid() && !worldgenlevel.getBlockState(blockpos1.west()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.west()).getBlock() instanceof SimpleWaterloggedBlock)) {
+                    if (!worldgenlevel.getBlockState(blockpos1.west()).isSolid() && !worldgenlevel.getBlockState(blockpos1.west()).is(Blocks.WATER) && !(worldgenlevel.getBlockState(blockpos1.west()).getBlock() instanceof SimpleWaterloggedBlock) &&
+                            !(worldgenlevel.getBlockState(blockpos1.west()).getBlock() instanceof LiquidBlockContainer)) {
                         worldgenlevel.setBlock(blockpos1.west(), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 2);
                     }
                 }
                 BlockState aboveBlock = worldgenlevel.getBlockState(blockpos1.above());
                 if (aboveBlock.getBlock() instanceof FallingBlock || (!aboveBlock.isSolid() && !aboveBlock.is(Blocks.WATER) && !aboveBlock.isAir())) {
                     worldgenlevel.setBlock(blockpos1.above(), Blocks.AIR.defaultBlockState(), 2);
+                    aboveBlock = worldgenlevel.getBlockState(blockpos1.above(2));
+                    if (aboveBlock.getBlock() instanceof FallingBlock || (!aboveBlock.isSolid() && !aboveBlock.is(Blocks.WATER) && !aboveBlock.isAir())) {
+                        worldgenlevel.setBlock(blockpos1.above(2), Blocks.AIR.defaultBlockState(), 2);
+                    }
                 }
             }
         }

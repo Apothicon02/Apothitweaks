@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:chain"
+    },
+    "C": {
+      "item": "minecraft:leather_leggings"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XCX",
+    "X X"
+  ],
+  "result": {
+    "item": "minecraft:chainmail_leggings"
+  },
+  "show_notification": true
+}

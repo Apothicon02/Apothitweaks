@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:chainmail_leggings"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XCX",
+    "X X"
+  ],
+  "result": {
+    "item": "minecraft:iron_leggings"
+  },
+  "show_notification": true
+}

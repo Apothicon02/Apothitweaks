@@ -1,5 +1,6 @@
 package com.Apothic0n.Apothitweaks.core.objects;
 
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,33 +34,35 @@ public class PetPacket implements ApothitweaksPacket {
 
     public void receiveMessage(Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> {
-            NetworkEvent.Context data = context.get();
-            Player player = data.getSender();
-            if (player != null && !player.isSpectator()) {
-                player.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(playerPet -> {
-                    BlockPos pos = player.blockPosition();
-                    ServerLevel level = (ServerLevel) player.level();
-                    if (level.hasChunkAt(pos)) {
-                        CompoundTag pet = playerPet.getPet();
-                        if (pet.isEmpty()) {
-                            Entity entity = player.getControlledVehicle();
-                            if (entity != null) {
-                                pet = entity.serializeNBT();
-                                playerPet.setPet(pet);
-                                entity.remove(Entity.RemovalReason.DISCARDED);
-                                level.playSound(null, pos, SoundEvents.SNIFFER_EGG_PLOP, SoundSource.PLAYERS, 1F, 1F);
+            if (ApothitweaksJsonReader.config.contains("mounts")) {
+                NetworkEvent.Context data = context.get();
+                Player player = data.getSender();
+                if (player != null && !player.isSpectator()) {
+                    player.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent(playerPet -> {
+                        BlockPos pos = player.blockPosition();
+                        ServerLevel level = (ServerLevel) player.level();
+                        if (level.hasChunkAt(pos)) {
+                            CompoundTag pet = playerPet.getPet();
+                            if (pet.isEmpty()) {
+                                Entity entity = player.getControlledVehicle();
+                                if (entity != null) {
+                                    pet = entity.serializeNBT();
+                                    playerPet.setPet(pet);
+                                    entity.remove(Entity.RemovalReason.DISCARDED);
+                                    level.playSound(null, pos, SoundEvents.SNIFFER_EGG_PLOP, SoundSource.PLAYERS, 1F, 1F);
+                                }
+                            } else {
+                                Entity entity = EntityType.create(pet, level).orElseThrow();
+                                entity.moveTo(player.position());
+                                entity.resetFallDistance();
+                                level.addFreshEntity(entity);
+                                playerPet.setPet(new CompoundTag());
+                                player.startRiding(entity);
+                                level.playSound(null, pos, SoundEvents.SNIFFER_EGG_CRACK, SoundSource.PLAYERS, 1F, 1F);
                             }
-                        } else {
-                            Entity entity = EntityType.create(pet, level).orElseThrow();
-                            entity.moveTo(player.position());
-                            entity.resetFallDistance();
-                            level.addFreshEntity(entity);
-                            playerPet.setPet(new CompoundTag());
-                            player.startRiding(entity);
-                            level.playSound(null, pos, SoundEvents.SNIFFER_EGG_CRACK, SoundSource.PLAYERS, 1F, 1F);
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 

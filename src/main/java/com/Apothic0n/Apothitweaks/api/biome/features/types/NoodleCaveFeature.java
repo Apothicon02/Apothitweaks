@@ -1,5 +1,6 @@
 package com.Apothic0n.Apothitweaks.api.biome.features.types;
 
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -29,35 +30,39 @@ public class NoodleCaveFeature extends Feature<NoneFeatureConfiguration> {
     private static final PerlinSimplexNoise NOODLE_NOISE = new PerlinSimplexNoise(new WorldgenRandom(new LegacyRandomSource(2345L)), ImmutableList.of(-6, 1, -1, 1));
 
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pContext) {
-        WorldGenLevel worldgenlevel = pContext.level();
-        ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
-        BlockPos origin =  new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
-        RandomSource random = pContext.random();
+        if (ApothitweaksJsonReader.config.contains("noodle_caves")) {
+            WorldGenLevel worldgenlevel = pContext.level();
+            ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
+            BlockPos origin = new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
+            RandomSource random = pContext.random();
 
-        for(int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
-            for(int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
-                double noise = NOODLE_NOISE.getValue(x, z, true);
-                double avoidNoise = NoodleRiverFeature.NOODLE_NOISE.getValue(x, z, true);
-                if (noise > 0 && noise < 0.01 && (avoidNoise < -0.2 || avoidNoise > 0.2)) {
-                    BlockPos heightmapPos = worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z));
-                    BlockPos blockpos = new BlockPos(heightmapPos.getX(), mid(heightmapPos.getY()-27, scanDownUntilPositive(worldgenlevel.getMinBuildHeight() + 15, heightmapPos)), heightmapPos.getZ());
-                    if (blockpos.getY() > worldgenlevel.getMinBuildHeight()+15 && blockpos.getY() < worldgenlevel.getMaxBuildHeight()-15) {
-                        if (worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x-6, 0, z)).getY() > heightmapPos.getY()-4 &&
-                                worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x+6, 0, z)).getY() > heightmapPos.getY()-4 &&
-                                worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z-6)).getY() > heightmapPos.getY()-4 &&
-                                worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z+6)).getY() > heightmapPos.getY()-4) {
-                            if (NOODLE_NOISE.getValue(x, blockpos.getY(), true) > 0) {
-                                replaceFromPos(worldgenlevel, blockpos, 6, 12, 7);
-                            } else {
-                                replaceFromPos(worldgenlevel, blockpos, 7, 9, 6);
+            for (int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
+                for (int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
+                    double noise = NOODLE_NOISE.getValue(x, z, true);
+                    double avoidNoise = NoodleRiverFeature.NOODLE_NOISE.getValue(x, z, true);
+                    if (noise > 0 && noise < 0.01 && (avoidNoise < -0.2 || avoidNoise > 0.2)) {
+                        BlockPos heightmapPos = worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z));
+                        BlockPos blockpos = new BlockPos(heightmapPos.getX(), mid(heightmapPos.getY() - 27, scanDownUntilPositive(worldgenlevel.getMinBuildHeight() + 15, heightmapPos)), heightmapPos.getZ());
+                        if (blockpos.getY() > worldgenlevel.getMinBuildHeight() + 15 && blockpos.getY() < worldgenlevel.getMaxBuildHeight() - 15) {
+                            if (worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x - 6, 0, z)).getY() > heightmapPos.getY() - 4 &&
+                                    worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x + 6, 0, z)).getY() > heightmapPos.getY() - 4 &&
+                                    worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z - 6)).getY() > heightmapPos.getY() - 4 &&
+                                    worldgenlevel.getHeightmapPos(Heightmap.Types.OCEAN_FLOOR_WG, new BlockPos(x, 0, z + 6)).getY() > heightmapPos.getY() - 4) {
+                                if (NOODLE_NOISE.getValue(x, blockpos.getY(), true) > 0) {
+                                    replaceFromPos(worldgenlevel, blockpos, 6, 12, 7);
+                                } else {
+                                    replaceFromPos(worldgenlevel, blockpos, 7, 9, 6);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void replaceFromPos(WorldGenLevel worldgenlevel, BlockPos blockpos, int i, int j, int k) {

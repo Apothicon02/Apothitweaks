@@ -1,5 +1,6 @@
 package com.Apothic0n.Apothitweaks.api.biome.features.types;
 
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -26,24 +27,28 @@ public class PathFeature extends Feature<NoneFeatureConfiguration> {
     private static final PerlinSimplexNoise PATH_NOISE = new PerlinSimplexNoise(new WorldgenRandom(new LegacyRandomSource(2345L)), ImmutableList.of(-10, 1, 1, 1));
 
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pContext) {
-        WorldGenLevel worldgenlevel = pContext.level();
-        ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
-        BlockPos origin =  new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
-        RandomSource random = pContext.random();
+        if (ApothitweaksJsonReader.config.contains("paths")) {
+            WorldGenLevel worldgenlevel = pContext.level();
+            ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
+            BlockPos origin = new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
+            RandomSource random = pContext.random();
 
-        for(int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
-            for(int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
-                double noise = PATH_NOISE.getValue(x, z, true);
-                if (noise > 0 && noise < 0.01) {
-                    BlockPos blockpos = worldgenlevel.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, new BlockPos(x, 0, z));
-                    if (blockpos.getY() > 64 && blockpos.getY() < 142) {
-                        replaceFromPos(worldgenlevel, blockpos, 4, 2, 4);
+            for (int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
+                for (int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
+                    double noise = PATH_NOISE.getValue(x, z, true);
+                    if (noise > 0 && noise < 0.01) {
+                        BlockPos blockpos = worldgenlevel.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, new BlockPos(x, 0, z));
+                        if (blockpos.getY() > 64 && blockpos.getY() < 142) {
+                            replaceFromPos(worldgenlevel, blockpos, 4, 2, 4);
+                        }
                     }
                 }
             }
-        }
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void replaceFromPos(WorldGenLevel worldgenlevel, BlockPos blockpos, int i, int j, int k) {

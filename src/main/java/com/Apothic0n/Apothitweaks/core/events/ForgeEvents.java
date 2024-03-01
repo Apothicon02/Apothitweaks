@@ -1,6 +1,7 @@
 package com.Apothic0n.Apothitweaks.core.events;
 
 import com.Apothic0n.Apothitweaks.Apothitweaks;
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import com.Apothic0n.Apothitweaks.core.objects.PlayerPet;
 import com.Apothic0n.Apothitweaks.core.objects.PlayerPetProvider;
 import net.minecraft.core.BlockPos;
@@ -38,13 +39,13 @@ import static com.Apothic0n.Apothitweaks.core.ApothitweaksMath.getOffsetDouble;
 public class ForgeEvents {
     @SubscribeEvent
     static void farmlandTrampleEvent(BlockEvent.FarmlandTrampleEvent event) {
-        event.setCanceled(true);
+        event.setCanceled(ApothitweaksJsonReader.config.contains("no_trampling"));
     }
 
     @SubscribeEvent
     static void playerJoined(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
-        if (entity.getType().equals(EntityType.PLAYER) && !event.getLevel().isClientSide) {
+        if (ApothitweaksJsonReader.config.contains("unlock_recipe_book") && entity.getType().equals(EntityType.PLAYER) && !event.getLevel().isClientSide) {
             ServerPlayer player = (ServerPlayer) entity;
             player.awardRecipes(event.getLevel().getRecipeManager().getRecipes());
         }
@@ -52,26 +53,28 @@ public class ForgeEvents {
 
     @SubscribeEvent
     static void playerInteractEvent(PlayerInteractEvent event) {
-        Level level = event.getLevel();
-        Player player = event.getEntity();
-        InteractionHand hand = player.getUsedItemHand();
-        BlockPos pos = event.getPos();
-        if (!level.getBlockState(pos).isSolid()) {
-            List<Entity> entities = level.getEntities((Entity) null, new AABB(pos), EntitySelector.NO_SPECTATORS);
-            for (Entity entity : entities) {
-                if (entity.getType().equals(EntityType.CHICKEN)) {
-                    player.swing(hand);
-                    if (Math.random() * 33 <= 1) {
-                        ItemStack itemStack = new ItemStack(Items.FEATHER);
-                        ItemEntity itemEntity = new ItemEntity(level,
-                                getOffsetDouble(pos.getX(), player.getEyePosition().x),
-                                getOffsetDouble(pos.getY(), player.getEyePosition().y),
-                                getOffsetDouble(pos.getZ(), player.getEyePosition().z),
-                                itemStack);
-                        level.addFreshEntity(itemEntity);
+        if (ApothitweaksJsonReader.config.contains("pet_chickens_for_feathers")) {
+            Level level = event.getLevel();
+            Player player = event.getEntity();
+            InteractionHand hand = player.getUsedItemHand();
+            BlockPos pos = event.getPos();
+            if (!level.getBlockState(pos).isSolid()) {
+                List<Entity> entities = level.getEntities((Entity) null, new AABB(pos), EntitySelector.NO_SPECTATORS);
+                for (Entity entity : entities) {
+                    if (entity.getType().equals(EntityType.CHICKEN)) {
+                        player.swing(hand);
+                        if (Math.random() * 33 <= 1) {
+                            ItemStack itemStack = new ItemStack(Items.FEATHER);
+                            ItemEntity itemEntity = new ItemEntity(level,
+                                    getOffsetDouble(pos.getX(), player.getEyePosition().x),
+                                    getOffsetDouble(pos.getY(), player.getEyePosition().y),
+                                    getOffsetDouble(pos.getZ(), player.getEyePosition().z),
+                                    itemStack);
+                            level.addFreshEntity(itemEntity);
+                        }
+                        level.playSound(player, pos, SoundEvents.WOOL_STEP, SoundSource.NEUTRAL);
+                        level.addParticle(ParticleTypes.SNOWFLAKE, false, entity.position().x, entity.position().y + 0.4, entity.position().z, Math.random() - 0.5, -0.5D, Math.random() - 0.5);
                     }
-                    level.playSound(player, pos, SoundEvents.WOOL_STEP, SoundSource.NEUTRAL);
-                    level.addParticle(ParticleTypes.SNOWFLAKE, false, entity.position().x, entity.position().y + 0.4, entity.position().z, Math.random() - 0.5, -0.5D, Math.random() - 0.5);
                 }
             }
         }
@@ -79,46 +82,48 @@ public class ForgeEvents {
 
     @SubscribeEvent
     static void renderGuiOverlayEvent(RenderGuiOverlayEvent event) {
-        if (event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type()) {
+        if (ApothitweaksJsonReader.config.contains("hunger_and_healing_overhaul") && event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type()) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void attachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player) {
+        if (ApothitweaksJsonReader.config.contains("mounts") && event.getObject() instanceof Player) {
             event.addCapability(new ResourceLocation(Apothitweaks.MODID, "properties"), new PlayerPetProvider());
         }
     }
 
     @SubscribeEvent
     public static void playerCloneEvent(PlayerEvent.Clone event) {
-        Player oldPlayer = event.getOriginal();
-        oldPlayer.revive();
-        Player newPlayer = event.getEntity();
-        if (event.isWasDeath()) {
-            oldPlayer.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent((oldPet) -> {
-                newPlayer.getCapability(PlayerPetProvider.PLAYER_PET).map(newPet -> {
-                    newPet.setPet(oldPet.getPet());
-                    return Unit.INSTANCE;
-                }).orElseGet(() -> {
-                   if (!oldPet.getPet().isEmpty()) {
-                       Level level = oldPlayer.level();
-                       Entity entity = EntityType.create(oldPet.getPet(), level).orElseThrow();
-                       entity.moveTo(oldPlayer.position());
-                       entity.resetFallDistance();
-                       level.addFreshEntity(entity);
-                       level.playSound(null, oldPlayer.blockPosition(), SoundEvents.SNIFFER_EGG_CRACK, SoundSource.PLAYERS, 1F, 1F);
-                   }
-                    return Unit.INSTANCE;
+        if (ApothitweaksJsonReader.config.contains("mounts")) {
+            Player oldPlayer = event.getOriginal();
+            oldPlayer.revive();
+            Player newPlayer = event.getEntity();
+            if (event.isWasDeath()) {
+                oldPlayer.getCapability(PlayerPetProvider.PLAYER_PET).ifPresent((oldPet) -> {
+                    newPlayer.getCapability(PlayerPetProvider.PLAYER_PET).map(newPet -> {
+                        newPet.setPet(oldPet.getPet());
+                        return Unit.INSTANCE;
+                    }).orElseGet(() -> {
+                        if (!oldPet.getPet().isEmpty()) {
+                            Level level = oldPlayer.level();
+                            Entity entity = EntityType.create(oldPet.getPet(), level).orElseThrow();
+                            entity.moveTo(oldPlayer.position());
+                            entity.resetFallDistance();
+                            level.addFreshEntity(entity);
+                            level.playSound(null, oldPlayer.blockPosition(), SoundEvents.SNIFFER_EGG_CRACK, SoundSource.PLAYERS, 1F, 1F);
+                        }
+                        return Unit.INSTANCE;
+                    });
                 });
-            });
+            }
         }
     }
 
     @SubscribeEvent
     public static void entityJoinLevelEvent(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof ItemEntity entity && entity.lifespan == 6000) {
+        if (ApothitweaksJsonReader.config.contains("longer_despawn_timer") && !event.getLevel().isClientSide() && event.getEntity() instanceof ItemEntity entity && entity.lifespan == 6000) {
             entity.lifespan = 36000;
         }
     }

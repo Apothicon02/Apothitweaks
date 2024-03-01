@@ -1,6 +1,7 @@
 package com.Apothic0n.Apothitweaks.core.events;
 
 import com.Apothic0n.Apothitweaks.Apothitweaks;
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.Lazy;
@@ -22,6 +23,8 @@ public class ClientModEvents {
     ));
     @SubscribeEvent
     public static void registerKeyMappingsEvent(RegisterKeyMappingsEvent event) {
-        event.register(PET_MAPPING.get());
+        if (ApothitweaksJsonReader.config.contains("mounts")) {
+            event.register(PET_MAPPING.get());
+        }
     }
 }

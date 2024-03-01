@@ -2,11 +2,13 @@
   "compatibilityLevel": "JAVA_17",
   "package": "com.Apothic0n.Apothitweaks.mixin",
   "refmap": "mixins.apothitweaks.refmap.json",
+  "plugin": "com.Apothic0n.Apothitweaks.api.ApothitweaksMixinConfig",
   "required": true,
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
+    "EntityMinecartRotationMixin",
     "AbstractMinecartMixin",
     "AbstractSkeletonMixin",
     "AnvilBlockMixin",
@@ -17,7 +19,7 @@
     "EnchantmentMixin",
     "EnchantmentTableBlockEntityMixin",
     "EnchantmentTableBlockMixin",
-    "EntityMixin",
+    "EntityFootstepsMixin",
     "FireworkRocketItemMixin",
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
@@ -26,7 +28,9 @@
     "ItemStackMixin",
     "LivingEntityMixin",
     "PigMixin",
-    "PlayerMixin",
+    "PlayerDropsMixin",
+    "PlayerMovementMixin",
+    "PlayerXPMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerLevelMixin",
     "SpiderMixin",

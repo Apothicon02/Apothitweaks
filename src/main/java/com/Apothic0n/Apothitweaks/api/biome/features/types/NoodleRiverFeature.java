@@ -1,5 +1,6 @@
 package com.Apothic0n.Apothitweaks.api.biome.features.types;
 
+import com.Apothic0n.Apothitweaks.api.ApothitweaksJsonReader;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -24,21 +25,25 @@ public class NoodleRiverFeature extends Feature<NoneFeatureConfiguration> {
     public static final PerlinSimplexNoise NOODLE_NOISE = new PerlinSimplexNoise(new WorldgenRandom(new LegacyRandomSource(2345L)), ImmutableList.of(-8, 1, 1, -1));
 
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pContext) {
-        WorldGenLevel worldgenlevel = pContext.level();
-        ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
-        BlockPos origin =  new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
-        RandomSource random = pContext.random();
+        if (ApothitweaksJsonReader.config.contains("underground_rivers")) {
+            WorldGenLevel worldgenlevel = pContext.level();
+            ChunkPos chunkOrigin = new ChunkPos(pContext.origin());
+            BlockPos origin = new BlockPos(chunkOrigin.getMiddleBlockX(), pContext.origin().getY(), chunkOrigin.getMiddleBlockZ());
+            RandomSource random = pContext.random();
 
-        for(int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
-            for(int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
-                double noise = NOODLE_NOISE.getValue(x, z, true);
-                if (noise > 0 && noise < 0.01) {
-                    replaceFromPos(worldgenlevel, new BlockPos((int) (x + ((Math.random()*5)-2)), 62, (int) (z + ((Math.random()*5)-2))), 8, 8, 8);
+            for (int x = origin.getX() - 16; x < origin.getX() + 16; ++x) {
+                for (int z = origin.getZ() - 16; z < origin.getZ() + 16; ++z) {
+                    double noise = NOODLE_NOISE.getValue(x, z, true);
+                    if (noise > 0 && noise < 0.01) {
+                        replaceFromPos(worldgenlevel, new BlockPos((int) (x + ((Math.random() * 5) - 2)), 62, (int) (z + ((Math.random() * 5) - 2))), 8, 8, 8);
+                    }
                 }
             }
-        }
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
     public void replaceFromPos(WorldGenLevel worldgenlevel, BlockPos blockpos, int i, int j, int k) {
         int l = Math.max(i, Math.max(j, k));

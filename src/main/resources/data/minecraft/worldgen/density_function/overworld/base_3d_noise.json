@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:range_choice",
+  "input": {
+    "type": "minecraft:y_clamped_gradient",
+    "from_y": 62,
+    "to_y": 63,
+    "from_value": -1,
+    "to_value": 1
+  },
+  "min_inclusive": 0,
+  "max_exclusive": 10,
+  "when_in_range": 0,
+  "when_out_of_range": {
+    "type": "minecraft:old_blended_noise",
+    "xz_scale": 0.25,
+    "y_scale": 0.125,
+    "xz_factor": 80,
+    "y_factor": 160,
+    "smear_scale_multiplier": 8
+  }
+}

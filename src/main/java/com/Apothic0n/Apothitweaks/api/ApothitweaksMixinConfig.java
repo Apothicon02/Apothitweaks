@@ -20,7 +20,7 @@ public class ApothitweaksMixinConfig implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         try {
-            ApothitweaksJsonReader.readConfig(Path.of(FMLPaths.MODSDIR.get().toString() + "/apothitweaks_config.json"));
+            ApothitweaksJsonReader.readConfig(Path.of(FMLPaths.CONFIGDIR.get().toString() + "/apothitweaks_config.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,6 +54,7 @@ public class ApothitweaksMixinConfig implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         String mixin = mixinClassName.substring(33, mixinClassName.length()-5);
         return switch (mixin) {
+            case "Minecraft" -> ApothitweaksJsonReader.config.contains("instant_block_placement");
             case "EntityMinecartRotation" -> ApothitweaksJsonReader.config.contains("minecart_camera_fix");
             case "AbstractMinecart" -> ApothitweaksJsonReader.config.contains("faster_minecarts");
             case "AbstractSkeleton" -> ApothitweaksJsonReader.config.contains("inaccurate_skeletons");

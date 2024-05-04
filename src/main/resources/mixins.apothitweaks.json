@@ -8,7 +8,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "EntityMinecartRotationMixin",
     "AbstractMinecartMixin",
     "AbstractSkeletonMixin",
     "AnvilBlockMixin",
@@ -20,6 +19,7 @@
     "EnchantmentTableBlockEntityMixin",
     "EnchantmentTableBlockMixin",
     "EntityFootstepsMixin",
+    "EntityMinecartRotationMixin",
     "FireworkRocketItemMixin",
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
@@ -38,6 +38,7 @@
   ],
   "client": [
     "ClientLevelMixin",
+    "MinecraftMixin",
     "NameTagItemMixin",
     "WaterDropParticleMixin"
   ],

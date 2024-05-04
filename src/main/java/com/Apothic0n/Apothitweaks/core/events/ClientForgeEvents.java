@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import static com.Apothic0n.Apothitweaks.core.ApothitweaksMath.getMiddleDouble;
@@ -45,7 +46,7 @@ public class ClientForgeEvents {
                     event.setFarPlaneDistance(event.getFarPlaneDistance() * 3);
                     event.setFogShape(FogShape.SPHERE);
                     event.setCanceled(true);
-                } else if (level.dimension().location().toString().contains("overworld")) {
+                } else if (level.dimension().location().toString().contains("overworld") && !ModList.get().isLoaded("hydrol")) {
                     float distance = event.getNearPlaneDistance() / getTimeOffset(level, 32);
                     float y = (float) event.getCamera().getPosition().y();
                     if (y < 48) {
@@ -65,7 +66,7 @@ public class ClientForgeEvents {
         if (ApothitweaksJsonReader.config.contains("custom_fog")) {
             Minecraft instance = Minecraft.getInstance();
             ClientLevel level = instance.level;
-            if (level != null && level.dimension().location().toString().contains("overworld") && event.getCamera().getFluidInCamera() == FogType.NONE) {
+            if (level != null && level.dimension().location().toString().contains("overworld") && event.getCamera().getFluidInCamera() == FogType.NONE && !ModList.get().isLoaded("hydrol")) {
                 float y = (float) event.getCamera().getPosition().y();
                 float temp = level.getBiome(event.getCamera().getBlockPosition().atY(69)).get().getBaseTemperature();
                 event.setRed(event.getRed() + (((temp - 0.8F) / 25)));

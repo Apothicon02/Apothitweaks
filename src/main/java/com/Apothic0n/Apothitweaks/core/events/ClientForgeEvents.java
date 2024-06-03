@@ -9,6 +9,9 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.shaders.FogShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -49,9 +52,12 @@ public class ClientForgeEvents {
                 } else if (level.dimension().location().toString().contains("overworld") && !ModList.get().isLoaded("hydrol")) {
                     float distance = event.getNearPlaneDistance() / getTimeOffset(level, 32);
                     float y = (float) event.getCamera().getPosition().y();
-                    if (y < 48) {
-                        event.setFarPlaneDistance(event.getFarPlaneDistance() / (ApothitweaksMath.invLerp(y, 1, 48, 16) + 1));
-                        distance = distance / (ApothitweaksMath.invLerp(y, 32, 48, 16) + 1);
+                    MinecraftServer server = level.getServer();
+                    if (server != null) {
+                        if (y < level.getSeaLevel() - 15 && server.getWorldData().isFlatWorld()) {
+                            event.setFarPlaneDistance(event.getFarPlaneDistance() / (ApothitweaksMath.invLerp(y, 1, 48, 16) + 1));
+                            distance = distance / (ApothitweaksMath.invLerp(y, 32, 48, 16) + 1);
+                        }
                     }
                     event.setNearPlaneDistance(distance);
                     event.setFogShape(FogShape.SPHERE);
@@ -72,12 +78,15 @@ public class ClientForgeEvents {
                 event.setRed(event.getRed() + (((temp - 0.8F) / 25)));
                 event.setGreen(event.getGreen() - (((temp - 0.8F) / 20)));
                 event.setBlue(event.getBlue() - (((temp - 0.8F) / 15)));
-                if (y < 48) {
-                    float yScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 1, 48, 16);
-                    float invYScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 0.8F, 16, 48);
-                    event.setRed((Math.max(yScale, event.getRed()) - (Math.min(yScale, event.getRed()) * yScale) + Math.min(yScale, event.getRed())) * (invYScale + 0.2F));
-                    event.setGreen((Math.max(yScale, event.getGreen()) - (Math.min(yScale, event.getGreen()) * yScale) + Math.min(yScale, event.getGreen())) * (invYScale + 0.2F));
-                    event.setBlue((Math.max(yScale, event.getBlue()) - (Math.min(yScale, event.getBlue()) * yScale) + Math.min(yScale, event.getBlue())) * (invYScale + 0.2F));
+                MinecraftServer server = level.getServer();
+                if (server != null) {
+                    if (y < level.getSeaLevel() - 15 && server.getWorldData().isFlatWorld()) {
+                        float yScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 1, 48, 16);
+                        float invYScale = ApothitweaksMath.invLerp(Math.min(Math.max(y, 16), 48), 0.8F, 16, 48);
+                        event.setRed((Math.max(yScale, event.getRed()) - (Math.min(yScale, event.getRed()) * yScale) + Math.min(yScale, event.getRed())) * (invYScale + 0.2F));
+                        event.setGreen((Math.max(yScale, event.getGreen()) - (Math.min(yScale, event.getGreen()) * yScale) + Math.min(yScale, event.getGreen())) * (invYScale + 0.2F));
+                        event.setBlue((Math.max(yScale, event.getBlue()) - (Math.min(yScale, event.getBlue()) * yScale) + Math.min(yScale, event.getBlue())) * (invYScale + 0.2F));
+                    }
                 }
             } else if (event.getCamera().getFluidInCamera() == FogType.WATER) {
                 event.setRed((float) getMiddleDouble(event.getRed(), 0.025));

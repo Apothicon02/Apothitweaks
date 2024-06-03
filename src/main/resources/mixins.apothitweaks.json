@@ -24,6 +24,7 @@
     "FoodDataMixin",
     "FoodOnAStickItemMixin",
     "ItemEntityMixin",
+    "ItemFoodMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",

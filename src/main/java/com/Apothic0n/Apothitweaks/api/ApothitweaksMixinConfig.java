@@ -85,6 +85,7 @@ public class ApothitweaksMixinConfig implements IMixinConfigPlugin {
             case "Spider" -> ApothitweaksJsonReader.config.contains("spiders_birth_cave_spiders_when_killed");
             case "Vex" -> ApothitweaksJsonReader.config.contains("vex_nerf");
             case "WaterDropParticle" -> ApothitweaksJsonReader.config.contains("transparent_rain_droplets");
+            case "ItemFood" -> ApothitweaksJsonReader.config.contains("unstackable_food");
             default -> false;
         };
     }

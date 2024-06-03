@@ -48,7 +48,7 @@ public class PetPacket implements ApothitweaksPacket {
                                 if (entity != null) {
                                     pet = entity.serializeNBT();
                                     playerPet.setPet(pet);
-                                    entity.remove(Entity.RemovalReason.DISCARDED);
+                                    entity.remove(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
                                     level.playSound(null, pos, SoundEvents.SNIFFER_EGG_PLOP, SoundSource.PLAYERS, 1F, 1F);
                                 }
                             } else {

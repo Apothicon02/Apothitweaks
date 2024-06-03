@@ -25,7 +25,7 @@ public class Apothitweaks {
             VillagerTrades.TRADES.get(VillagerProfession.CARTOGRAPHER).put(1, new VillagerTrades.ItemListing[]{new VillagerTrades.ItemsForEmeralds(Items.RECOVERY_COMPASS, 3, 1, 2)});
         }
         if (ApothitweaksJsonReader.config.contains("stackable_potions")) {
-            ObfuscationReflectionHelper.setPrivateValue(Item.class, Items.POTION, 16, "f_41370_");
+            ObfuscationReflectionHelper.setPrivateValue(Item.class, Items.POTION, 3, "f_41370_");
         }
     }
 }

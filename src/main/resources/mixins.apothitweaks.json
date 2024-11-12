@@ -28,6 +28,7 @@
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
+    "MobMixin",
     "PigMixin",
     "PlayerDropsMixin",
     "PlayerMovementMixin",
